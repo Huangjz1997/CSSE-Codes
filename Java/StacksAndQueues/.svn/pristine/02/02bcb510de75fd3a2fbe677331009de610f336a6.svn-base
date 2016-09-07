@@ -1,0 +1,74 @@
+package queues;
+
+import java.util.NoSuchElementException;
+import java.util.Stack;
+
+public class QueueFromStacks<T> implements SimpleQueue<T> {
+
+	Stack<T> aStack = new Stack<>();
+	Stack<T> bStack = new Stack<>();
+
+	public void enqueue(T i) {
+		while (!bStack.isEmpty()) {
+			aStack.push(bStack.pop());
+		}
+		aStack.push(i);
+	}
+
+	public int size() {
+		return (aStack.size() + bStack.size());
+	}
+
+	public T dequeue() {
+		if (this.isEmpty())
+			throw new NoSuchElementException();
+		while (!aStack.isEmpty()) {
+			bStack.push(aStack.pop());
+		}
+		return bStack.pop();
+	}
+
+	public T peek() {
+		if (this.isEmpty())
+			throw new NoSuchElementException();
+		while (!aStack.isEmpty())
+			bStack.push(aStack.pop());
+		return bStack.peek();
+	}
+
+	public boolean isEmpty() {
+		return (aStack.isEmpty() && bStack.isEmpty());
+	}
+
+	public boolean contains(T element) {
+		return (aStack.contains(element) || bStack.contains(element));
+	}
+
+	public void clear() {
+		aStack.clear();
+		bStack.clear();
+
+	}
+
+	public String toString() {
+		if (this.isEmpty())
+			return "[]";
+		while (!aStack.isEmpty()) {
+			bStack.push(aStack.pop());
+		}
+		String ans = "[";
+		ans = ans + bStack.peek();
+		aStack.push(bStack.pop());
+		while (!bStack.isEmpty()) {
+			ans = ans + ", " + bStack.peek();
+			aStack.push(bStack.pop());
+		}
+		return ans + "]";
+
+	}
+
+	public String debugString() {
+		return null;
+	}
+
+}

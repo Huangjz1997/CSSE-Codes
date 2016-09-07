@@ -1,0 +1,86 @@
+package hardysTaxi;
+
+import java.util.ArrayList;
+
+/**
+ * Provides the static method hardySolutionsLessThan(N) which finds all "taxicab
+ * numbers that are less than n. These are represented as TaxicabNumber objects,
+ * which include the sum and two different ways of writing that as a sum of two
+ * cubes.
+ * 
+ * @author Claude Anderson.
+ * 
+ */
+public class Hardy {
+	//private static HashSet<Long> set = new HashSet<>();
+	private static EditTree set=new EditTree();
+	private static EditTree ansList =new EditTree();
+	private static ArrayList<Integer>index = new ArrayList<>();
+	private static int Minimal = 0;
+	private static Long MAX = 0L;
+	private static Long ans = 0L;
+	/**
+	 * Find the nth Hardy number (start counting with 1, not 0) and the numbers
+	 * whose cubes demonstrate that it is a Hardy number.
+	 * 
+	 * @param n
+	 * @return the nth Hardy number
+	 */
+	private static long cube(int k) {
+		long ans = k;
+		ans = ans * ans * ans;
+		return ans;
+	}
+
+	public static void clear(int k) {
+		for (int i =0; i <k; i++) {
+			index.add(0);
+		}
+	}
+
+	public static Long init(long MAX) {
+		int i = Minimal + 1;
+		long mini=Long.MAX_VALUE;
+		while (cube(i) + 1 <= MAX) {
+			long tmp1 = cube(i);
+			if (i >=index.size())
+				clear(10000);
+			long tmp2 = cube(index.get(i) + 1);
+			while (tmp1 + tmp2 <= MAX) {
+				index.set(i, index.get(i)+1);
+				long tmp3 = tmp1 + tmp2;
+				if (tmp3<mini) mini=tmp3;
+				if (set.contains(tmp3)) {
+					if (!ansList.contains(tmp3)) {
+						ansList.add(tmp3);
+						//System.out.println("size     "+(++size));
+					}
+				} else {
+					set.add(tmp3);
+					//System.out.println(i);
+				}
+				if (index.get(i) == i) {
+					Minimal = i;
+					break;
+				}
+				tmp2 = cube(index.get(i) + 1);
+			}
+			i++;
+		}
+		while(set.get(0)<mini) set.delete(0);
+		return ansList.size();
+	}
+
+	public static long nthHardyNumber(int n) {
+		while (ans < n) {
+			MAX = MAX +200000000;
+			ans = init(MAX);
+//			System.out.println(MAX+"   "+ans);
+//			System.out.println("Size:  "+set.size());
+		}
+		return ansList.get(n - 1);
+
+
+	}
+
+}

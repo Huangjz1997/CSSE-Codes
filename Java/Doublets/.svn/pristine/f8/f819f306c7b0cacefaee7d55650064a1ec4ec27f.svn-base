@@ -1,0 +1,94 @@
+import java.util.Scanner;
+import java.util.Set;
+
+import javax.security.auth.kerberos.KerberosKey;
+
+import org.junit.experimental.theories.Theories;
+
+/**
+ * Contains the general algorithm to search for doublets.
+ *
+ * @author <<YOUR NAME(S) HERE>>
+ *         Created Mar 18, 2011.
+ */
+public class Doublets {
+	private static String begin,end;
+	private static String command;
+	private static ChainManager manager;
+	private static Links links;
+	public static void main(String[] args) {
+		System.out.println("Welcome to Doublets, a game of 	\"verbal torture.\"");
+		while (true){
+			init();
+			if (links.contains(begin)&&(links.contains(end))) work();
+			else System.out.println("The word is not valid. Please try again.");
+		}
+	}
+	private static void work() {
+		Chain chain;
+		String word;
+		while (true){
+			chain=manager.next();
+			if (chain==null){
+				System.out.println("No doublet chain exists from owner to bribe.");
+				return;
+			}
+			word=chain.getLast();
+			if (word.equals(end)){
+				System.out.println("Chain: "+chain.getList());
+				System.out.println("Length: "+chain.length());
+				System.out.println("Candidates: "+manager.getNumberOfNexts());
+				System.out.println("Max size: "+manager.maxSize());
+				return;
+			}
+			Set<String> set=links.getCandidates(word);
+			if (set!=null){
+				for (String k:set){
+					Chain tmp=chain.addLast(k);
+					if (!tmp.getLast().equals(word))manager.add(tmp);
+				}
+			}
+			
+		}
+	
+	}
+
+	public static String getEnd(){
+		return end;
+	}
+	private static void makelinks(String string){
+		links=new Links(string);
+	}
+	
+	@SuppressWarnings("resource")
+	public static void init(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter dictionary(10,20,35,95): ");
+        command=scanner.nextLine();
+        while (!command.equals("10")&& !command.equals("20")&&!command.equals("35") &&!command.equals("95")){
+            System.out.print("Wrong input. Enter dictionary(10,20,35,95: ");
+            command=scanner.nextLine();
+        }
+        makelinks("english.cleaned.all."+command+".txt");
+		System.out.print("Please input the begin word:");
+        begin= scanner.nextLine();
+        System.out.print("Please input the end word:");
+        end=scanner.nextLine();
+        System.out.print("Enter chain manager (s: stack, q: queue, p: priority queue, x: exit):");
+        command=scanner.nextLine();
+        while (!command.equals("s")&& !command.equals("q")&&!command.equals("p") &&!command.equals("x")){
+            System.out.print("Wrong input. Plese enter chain manager (s: stack, q: queue, p: priority queue, x: exit):");
+            command=scanner.nextLine();
+        }
+        if (command.equals("x")) {
+        	System.out.println("Goodbye");
+        	System.exit(0);
+        }
+        Chain tmp=new Chain();
+        tmp=tmp.addLast(begin);
+        if (command.equals("s")) manager=new StackChainManager();
+        if (command.equals("q")) manager=new QueueChainManager();
+        if (command.equals("p")) manager=new PriorityQueueChainManager();
+        manager.add(tmp);
+	}
+}

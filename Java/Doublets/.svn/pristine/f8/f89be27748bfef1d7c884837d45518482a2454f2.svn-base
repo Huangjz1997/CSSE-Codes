@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+/**
+ * Contains the general algorithm to search for doublets.
+ *
+ * @author <<YOUR NAME(S) HERE>>
+ *         Created Mar 18, 2011.
+ */
+public class Doublets {
+	private static String begin,end;
+	private static String command;
+	private static ChainManager manager;
+	private static Links links;
+	public static void main(String[] args) {
+		System.out.println("Welcome to Doublets, a game of 	\"verbal torture.\"");
+		while (true){
+			init();
+			work();
+		}
+	}
+	private static void work() {
+		Chain chain;
+		String word;
+		while (true){
+			chain=manager.next();
+			word=chain.getLast();
+			if (word.equals(end)){
+				System.out.println("Chain: "+chain.getLast());
+				System.out.println("Length: "+chain.length());
+				System.out.println("Max size: "+manager.maxSize());
+				System.exit(0);
+			}
+			
+		}
+		
+	}
+	@SuppressWarnings("resource")
+	public static void init(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter dictionary(10,20,35,95: ");
+        command=scanner.nextLine();
+        while (!command.equals("10")&& !command.equals("20")&&!command.equals("35") &&!command.equals("95")){
+            System.out.print("Wrong input. Enter dictionary(10,20,35,95: ");
+            command=scanner.nextLine();
+        }
+        if (command.equals("10")) links=new Links("english.cleaned.all.10.txt");
+        if (command.equals("20")) links=new Links("english.cleaned.all.20.txt");
+        if (command.equals("35")) links=new Links("english.cleaned.all.35.txt");
+        if (command.equals("95")) links=new Links("english.cleaned.all.95.txt");
+		System.out.print("Please input the begin word:");
+        begin= scanner.nextLine();
+        System.out.print("Please input the end word:");
+        end=scanner.nextLine();
+        System.out.print("Enter chain manager (s: stack, q: queue, p: priority queue, x: exit):");
+        command=scanner.nextLine();
+        while (!command.equals("s")&& !command.equals("q")&&!command.equals("p") &&!command.equals("x")){
+            System.out.print("Wrong input. Plese enter chain manager (s: stack, q: queue, p: priority queue, x: exit):");
+            command=scanner.nextLine();
+        }
+        if (command.equals("x")) {
+        	System.out.println("Goodbye");
+        	System.exit(0);
+        }
+        Chain tmp=new Chain();
+        tmp.addLast(begin);
+        if (command.equals("s")) manager=new StackChainManager();
+        if (command.equals("q")) manager=new QueueChainManager();
+        if (command.equals("p")) manager=new PriorityQueueChainManager();
+        manager.add(tmp);
+	}
+}

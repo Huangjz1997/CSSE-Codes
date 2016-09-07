@@ -1,0 +1,45 @@
+package queues;
+
+public class QueueFromStacks<T> {
+
+	public void enqueue(T i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int size() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public T dequeue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public T peek() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean isEmpty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean contains(T element) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public String debugString() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

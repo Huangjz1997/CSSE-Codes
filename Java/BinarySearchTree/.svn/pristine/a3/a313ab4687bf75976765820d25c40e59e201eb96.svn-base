@@ -1,0 +1,200 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Stack;
+
+import javax.swing.table.TableColumnModel;
+import javax.xml.soap.Node;
+
+import org.omg.CORBA.PUBLIC_MEMBER;
+
+/**
+ * 
+ * Implementation of most of the Set interface operations using a Binary Search Tree
+ *
+ * @author Matt Boutell and <<< YOUR NAME HERE >>>.
+ * @param <T>
+ */
+
+public class BinarySearchTree<T> {
+	private BinaryNode root;
+
+	// Most of you will prefer to use NULL NODES once you see how to use them.
+	private final BinaryNode NULL_NODE = new BinaryNode();
+
+	public BinarySearchTree() {
+		root =NULL_NODE;
+	}
+
+	// For manual tests only
+	void setRoot(BinaryNode n) {
+		this.root = n;
+	}
+	
+	// Not private, since we need access for manual testing.
+	class BinaryNode {
+		private T data;
+		private BinaryNode left;
+		private BinaryNode right;
+		public int height;
+
+		public BinaryNode() {
+			this.data = null;
+			this.left = null;
+			this.right = null;
+		}
+
+		public BinaryNode(T element) {
+			this.data = element;
+			this.left =NULL_NODE;
+			this.right =NULL_NODE;
+		}
+
+		public T getData() {
+			return this.data;
+		}
+
+		public BinaryNode getLeft() {
+			return this.left;
+		}
+
+
+		public BinaryNode getRight() {
+			return this.right;
+		}
+
+		// For manual testing
+		public void setLeft(BinaryNode left) {
+			this.left = left;
+		}
+		
+		public void setRight(BinaryNode right) {
+			this.right = right;
+		}
+
+		public int size() {
+			if(this==NULL_NODE) return 0;
+			return this.left.size()+this.right.size()+1;
+		}
+
+		public int height() {
+			if (this==NULL_NODE) return -1;
+			System.out.println(Math.max(-1, -1));
+			return 1+Math.max(this.left.height(), this.right.height());
+		}
+
+		public boolean containsN(T i) {
+			if (this==NULL_NODE) return false;
+			if (this.data.equals(i)) return true;
+			return this.left.containsN(i)||this.right.containsN(i);
+			
+		}
+
+		public ArrayList<T> toArrayList() {
+			if (this==NULL_NODE) return new ArrayList<T>();
+			ArrayList<T> tmp=this.left.toArrayList();
+			tmp.add((T) this.data);
+			tmp.addAll(this.right.toArrayList());
+			return tmp;
+		}
+
+		public int toArray(int i,Object[] ans) {
+			if (this==NULL_NODE) return i;
+			int k=this.left.toArray(i, ans);
+			ans[k]=this.data;
+			return this.right.toArray(k+1, ans);
+		}
+		
+	}
+
+	public int size() {
+		return root==NULL_NODE?0:root.size();
+	}
+
+	public boolean isEmpty() {
+		return root==NULL_NODE;
+	}
+
+	public int height() {
+		return root.height();
+	}
+
+	public boolean containsNonBST(T i) {
+		return root.containsN(i);
+	}
+
+	public ArrayList<T> toArrayList() {
+		return this.root.toArrayList();
+	}
+
+	public Object[] toArray() {
+		Object[] ans=new Object[this.root.size()];
+		this.root.toArray(0,ans);
+		return ans;
+	}
+	
+	public String toString(){
+		return this.root.toArrayList().toString();
+		
+		
+	}
+
+	public Iterator<T> inefficientIterator() {
+		return new ArrayListIterator();
+	}
+	class ArrayListIterator implements Iterator<T>{
+		private ArrayList<T> ar;
+		private int pos;
+		public  ArrayListIterator() {
+			this.ar=toArrayList();
+			this.pos=0;
+		}
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return pos<this.ar.size();
+		}
+
+		@Override
+		public T next() {
+			if (!hasNext()){
+				throw new NoSuchElementException();
+			}
+			pos++;
+			return ar.get(pos-1);
+		}
+		
+	}
+
+	public Iterator<T> preOrderIterator() {
+		return new preOrderIter();
+	}
+	class preOrderIter implements Iterator<T>{
+		
+		Stack<BinaryNode> stack;
+		public  preOrderIter() {
+			stack=new Stack<>();
+			if (root!=NULL_NODE) stack.push(root);
+		}
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public T next() {
+			if (!hasNext()){
+				throw new NoSuchElementException();
+			}
+			BinaryNode top=stack.pop();
+			if (top.right!=NULL_NODE) stack.push(top.right);
+			if (top.left!=NULL_NODE) stack.push(top.left);
+			return top.data;
+		}
+		
+	}
+
+	// TODO: Implement your 3 iterator classes here, plus any other inner helper classes you'd like. 
+	 
+
+}
